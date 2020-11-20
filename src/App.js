@@ -1,25 +1,41 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { useDispatch } from "react-redux";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import ScrollToTop from "./components/ScrollToTop/ScrollToTop";
+import BookingResult from "./pages/BookingResult/BookingResult";
+import BookTicketPage from "./pages/BookTicketPage/BookTicketPage";
+import DetailPage from "./pages/DetailPage/DetailPage";
+import HomePage from "./pages/HomePage/HomePage";
+import LoginPage from "./pages/LoginPage/LoginPage";
+import PrivateRoute from "./pages/PrivateRoute";
+import SignUpPage from "./pages/SignUpPage/SignUpPage";
+import { createAction } from "./redux/actions/actionCreator";
+import { SET_USER_LOGIN } from "./redux/actions/actionTypes";
 
 function App() {
+  const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    const credentials = localStorage.getItem("credentials");
+    if (credentials)
+      dispatch(createAction(SET_USER_LOGIN, JSON.parse(credentials)));
+  }, [dispatch]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <ScrollToTop />
+      <Switch>
+        <Route path="/phim/:maPhim" component={DetailPage} />
+        <Route path="/dangnhap" component={LoginPage} />
+        <Route path="/dangky" component={SignUpPage} />
+        <PrivateRoute
+          path="/muave/ketqua/:maLichChieu"
+          component={BookingResult}
+        />
+        <PrivateRoute path="/muave/:maLichChieu" component={BookTicketPage} />
+        <Route path="/" component={HomePage} />
+      </Switch>
+    </BrowserRouter>
   );
 }
 
