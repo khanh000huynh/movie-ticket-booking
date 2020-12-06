@@ -122,11 +122,6 @@ const Theater = (props) => {
   const theaterList = useSelector((state) => state.theater.theaterList);
   const showing = useSelector((state) => state.movie.showing);
 
-  React.useEffect(() => {
-    dispatch(setTheaterSystem());
-    dispatch(setShowing());
-  }, [dispatch]);
-
   const renderTheaterSystem = React.useCallback(() => {
     return theaterSystem.map((system, index) => (
       <Grid item xs={4} sm={12} key={index}>
@@ -163,7 +158,7 @@ const Theater = (props) => {
   }, [theaterList, chosenTheaterSystem.maHeThongRap, classes.divider]);
 
   const renderMovieList = React.useCallback(() => {
-    if (!showing.length)
+    if (!showing.length || !movieList)
       return [...new Array(8)].map((arr, index) => (
         <Grid item container justify="center" xs={12} key={index}>
           <Skeleton width="100%" height={120} animation="wave" />
@@ -187,6 +182,7 @@ const Theater = (props) => {
     const newDanhSachPhim = movieList.filter((movie) =>
       maPhimList.includes(movie.maPhim)
     );
+
     return newDanhSachPhim.map((movie, index) => (
       <Grid xs={12} item key={index}>
         <MiniMovie movie={movie} />
@@ -200,6 +196,11 @@ const Theater = (props) => {
     movieList,
     classes.divider,
   ]);
+
+  React.useEffect(() => {
+    dispatch(setTheaterSystem());
+    dispatch(setShowing());
+  }, [dispatch]);
 
   return (
     <Grid container spacing={4} className={classes.root} id={sectionId}>

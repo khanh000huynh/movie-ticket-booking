@@ -142,6 +142,14 @@ const LogInForm = (props) => {
   const isLoggingIn = useSelector((state) => state.user.isLoggingIn);
   const delayTask = useSelector((state) => state.delayTask);
 
+  const handleLogIn = React.useCallback(
+    (values) => {
+      dispatch(logIn(values));
+      dispatch(createAction(SET_IS_LOGGING_IN, true));
+    },
+    [dispatch]
+  );
+
   const handleRedirectToSignUpPage = React.useCallback(() => {
     props.history.push("/dangky");
   }, [props.history]);
@@ -163,11 +171,8 @@ const LogInForm = (props) => {
           taiKhoan: "",
           matKhau: "",
         }}
+        onSubmit={handleLogIn}
         validationSchema={LogInSchema}
-        onSubmit={(values) => {
-          dispatch(logIn(values));
-          dispatch(createAction(SET_IS_LOGGING_IN, true));
-        }}
       >
         {({ errors, touched }) => (
           <Form className={classes.form}>

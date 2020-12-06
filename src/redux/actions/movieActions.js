@@ -1,34 +1,11 @@
 import connector from "../../configs/connector";
 import { createAction } from "./actionCreator";
 import {
-  SET_FINISHED_LOADING_MOVIES,
-  SET_MISSING_INFO,
   SET_MOVIE,
-  SET_MOVIE_INFO,
+  SET_MOVIE_RATING,
   SET_SHOWING,
   SET_SHOWTIME,
 } from "./actionTypes";
-
-export const setFinishedLoadingMovies = (isLoading) => {
-  return (dispatch) => {
-    dispatch(createAction(SET_FINISHED_LOADING_MOVIES, isLoading));
-  };
-};
-
-export const setMovieInfo = (maPhim) => {
-  return (dispatch) => {
-    connector({
-      url: `https://movie0706.cybersoft.edu.vn/api/QuanLyPhim/LayThongTinPhim?MaPhim=${maPhim}`,
-      method: "GET",
-    })
-      .then((res) => {
-        dispatch(createAction(SET_MOVIE_INFO, res.data));
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-};
 
 export const setMovies = () => {
   return (dispatch) => {
@@ -39,6 +16,33 @@ export const setMovies = () => {
     })
       .then((res) => {
         dispatch(createAction(SET_MOVIE, res.data));
+        const movieList = res.data;
+        connector({
+          url: `https://5f1d781039d95a0016954056.mockapi.io/api/movie-rating`,
+          method: "GET",
+        }).then((ratedMovie) => {
+          const ratedMovieList = ratedMovie.data;
+          movieList.map((movie) => {
+            let rating;
+            if (
+              ratedMovieList
+                .map((movie) => +movie.maPhim)
+                .includes(+movie.maPhim)
+            ) {
+              rating = ratedMovieList.find(
+                (rated) => +rated.maPhim === +movie.maPhim
+              )?.danhGia;
+              dispatch(
+                createAction(SET_MOVIE_RATING, {
+                  maPhim: movie.maPhim,
+                  danhGia: rating,
+                })
+              );
+              return { ...movie, rating };
+            }
+            return movie;
+          });
+        });
       })
       .catch((err) => {
         console.log(err);
@@ -76,18 +80,5 @@ export const setShowtime = (maPhim) => {
       .catch((err) => {
         console.log(err);
       });
-  };
-};
-
-export const setMissingInfo = (maPhim) => {
-  return (dispatch) => {
-    connector({
-      url: `https://movie0706.cybersoft.edu.vn/api/QuanLyRap/LayThongTinLichChieuPhim?MaPhim=${maPhim}`,
-      method: "GET",
-    })
-      .then((res) => {
-        dispatch(createAction(SET_MISSING_INFO, res.data));
-      })
-      .catch((err) => console.log(err));
   };
 };

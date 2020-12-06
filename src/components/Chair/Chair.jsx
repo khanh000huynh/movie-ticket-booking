@@ -3,6 +3,7 @@ import WeekendRoundedIcon from "@material-ui/icons/WeekendRounded";
 import classnames from "classnames";
 import React from "react";
 import { useDispatch } from "react-redux";
+import { setMessageBox } from "../../redux/actions/pageAction";
 import { setChosenChairList } from "../../redux/actions/ticketBookingActions";
 import theme from "../../theme/theme";
 
@@ -73,7 +74,13 @@ const Chair = (props) => {
       (daDat && taiKhoanNguoiDat) ||
       (chosenChairList.length === 10 && !isChosen)
     ) {
-      alert("Bạn không thể chọn quá 10 ghế!");
+      dispatch(
+        setMessageBox({
+          isOpened: true,
+          message: "Bạn không thể chọn quá 10 ghế!",
+          type: "warning",
+        })
+      );
       return;
     }
     dispatch(setChosenChairList(chair));

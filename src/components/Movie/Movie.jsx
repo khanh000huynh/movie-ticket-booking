@@ -5,7 +5,7 @@ import {
   CardContent,
   CardMedia,
   makeStyles,
-  Typography,
+  Typography
 } from "@material-ui/core";
 import { Rating } from "@material-ui/lab";
 import React from "react";
@@ -77,6 +77,7 @@ const useStyles = makeStyles({
     transition: theme.transitions.duration,
   },
   overlay: {
+    cursor: "default",
     width: "100%",
     height: "100%",
     opacity: 0.5,
@@ -143,63 +144,52 @@ const useStyles = makeStyles({
 
 const Movie = (props) => {
   const classes = useStyles();
-  // const dispatch = useDispatch();
   const { movie } = props;
-  const { maPhim, tenPhim, trailer, hinhAnh, danhGia } = movie;
-  const movieInfo = useSelector((state) => state.movie.movieInfo);
-  const movieInShowingList = React.useMemo(
-    () => movieInfo?.isShowingList.find((movie) => movie.maPhim === maPhim),
-    [movieInfo, maPhim]
-  );
-
-  // const missingInfo = useSelector((state) => state.movie.missingInfo);
-  // const thoiLuong = React.useMemo(() => {
-  //   return missingInfo
-  //     .filter((item) => item.maPhim === maPhim)
-  //     .map((item) => item.thoiLuong);
-  // }, [missingInfo, maPhim]);
-
-  // React.useEffect(() => {
-  //   dispatch(setMissingInfo(maPhim));
-  // }, [dispatch, maPhim]);
+  const { maPhim, tenPhim, trailer, hinhAnh } = movie;
+  const movieRating = useSelector((state) => state.movie.movieRating);
+  const diem = React.useMemo(() => {
+    if (!movie || !movieRating) return;
+    const index = movieRating.findIndex((item) => item.maPhim === maPhim);
+    let result = 0;
+    if (index !== -1) {
+      result = (
+        movieRating[index].danhGia
+          .map((item) => item.diem)
+          .reduce((prev, current) => prev + current) /
+        movieRating[index].danhGia.length
+      ).toFixed(1);
+    }
+    return result;
+  }, [movie, movieRating, maPhim]);
 
   return (
     <>
-      {!movieInfo.isShowingList ? (
-        <div>loading hehe...</div>
-      ) : (
+      {maPhim && (
         <Card elevation={0} className={classes.root}>
-          <CardActionArea>
-            {movieInShowingList.hinhAnh ? (
-              <CardMedia className={classes.media} image={hinhAnh}>
-                <Link to={`/phim/${maPhim}`}>
-                  <Box className={classes.overlay} />
-                </Link>
-                <Box className={classes.trailer}>
-                  <Trailer trailer={trailer} />
-                </Box>
-                <Box className={classes.rating}>
-                  <Typography>{danhGia}</Typography>
-                  <Box
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                  >
-                    <Rating
-                      value={danhGia / 2}
-                      max={Math.floor(danhGia / 2)}
-                      precision={1}
-                      readOnly
-                    />
+          <CardActionArea disableRipple>
+            <CardMedia className={classes.media} image={hinhAnh}>
+              <Box className={classes.overlay} />
+              <Box className={classes.trailer}>
+                <Trailer trailer={trailer} />
+              </Box>
+              <Box className={classes.rating}>
+                <Typography>{diem}</Typography>
+                <Box display="flex" alignItems="center" justifyContent="center">
+                  <Rating
+                    value={diem / 2}
+                    max={Math.floor(diem / 2)}
+                    precision={1}
+                    readOnly
+                  />
+                  {diem ? (
                     <Typography className={classes.halfRating}>
                       &frac12;
                     </Typography>
-                  </Box>
+                  ) : null}
                 </Box>
-              </CardMedia>
-            ) : (
-              <div>met moi lam ban toi oi...</div>
-            )}
+              </Box>
+            </CardMedia>
+
             <Link to={`/phim/${maPhim}`} className={classes.linkContent}>
               <CardContent className={classes.content}>
                 <Box display="flex">
@@ -215,9 +205,7 @@ const Movie = (props) => {
                 <Typography className={classes.time} component="p">
                   {120 | 0}&nbsp;phút
                 </Typography>
-                <Box className={classes.bookButton}>
-                  {movieInShowingList.maPhim ? "MUA VÉ" : "XEM THÔNG TIN"}
-                </Box>
+                <Box className={classes.bookButton}>XEM THÔNG TIN</Box>
               </CardContent>
             </Link>
           </CardActionArea>

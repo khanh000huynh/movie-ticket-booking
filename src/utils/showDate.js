@@ -27,11 +27,3 @@ export const toYMD = (dmyString) => {
     dmyString.substr(0, 2)
   );
 };
-
-// export const isEqual = (date1, date2) => {
-//   return (
-//     date1.getDate() === date2.getDate() &&
-//     date1.getMonth() === date2.getMonth() &&
-//     date1.getFullYear() === date2.getFullYear()
-//   );
-// };

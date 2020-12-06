@@ -136,9 +136,11 @@ const BookTicketRight = (props) => {
     if (!chosenChairList.length) return 0;
     const priceList = chosenChairList.map((chair) => chair.giaVe);
     return Intl.NumberFormat().format(
-      priceList.reduce(
-        (accumulator, currentValue) => accumulator + currentValue,
-        0
+      Math.round(
+        priceList.reduce(
+          (accumulator, currentValue) => accumulator + currentValue,
+          0
+        )
       )
     );
   }, [chosenChairList]);

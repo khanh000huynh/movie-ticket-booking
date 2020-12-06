@@ -92,11 +92,11 @@ const MiniMovie = (props) => {
 
   const renderShowtime = React.useCallback(() => {
     if (!showtimeList.length)
-      return [...new Array(3)].map((arr, index) => (
-        <Box mr={1.5} key={index}>
-          <Skeleton width={114.65} height={40} animation="wave" />
+      return (
+        <Box mr={1.5}>
+          <Skeleton width={114.65} height={48.4} animation="wave" />
         </Box>
-      ));
+      );
 
     const firstDate = showtimeList
       .filter((s, index) => index === 0)

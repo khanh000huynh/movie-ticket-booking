@@ -9,22 +9,23 @@ const Slide = (props) => {
   const useStyles = makeStyles({
     root: {
       backgroundColor: theme.palette.text.primary,
+      "& > div": {
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      },
     },
     slide: {
       cursor: "pointer",
       position: "relative",
-      backgroundSize: "contain",
       "&:hover $trailer": {
         opacity: 1,
       },
-      [theme.breakpoints.down("xl")]: {
-        height: 650,
-      },
       [theme.breakpoints.down("lg")]: {
-        height: 550,
+        height: 653,
       },
       [theme.breakpoints.down("md")]: {
-        height: 400,
+        height: 500,
       },
       [theme.breakpoints.down("sm")]: {
         backgroundSize: "cover",
@@ -35,6 +36,12 @@ const Slide = (props) => {
       transition: theme.transitions.duration,
       [theme.breakpoints.down("sm")]: {
         opacity: 1,
+      },
+      [theme.breakpoints.down("xs")]: {
+        "& img": {
+          width: 50,
+          height: 50,
+        },
       },
     },
   });

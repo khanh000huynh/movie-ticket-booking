@@ -8,8 +8,9 @@ import {
 } from "@material-ui/core";
 import { Rating, Skeleton } from "@material-ui/lab";
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-scroll";
+import { setDetailMovieRating } from "../../redux/actions/detailActions";
 import theme from "../../theme/theme";
 import { toDMY } from "../../utils/showDate";
 import Trailer from "../Trailer/trailer";
@@ -68,8 +69,9 @@ const useStyles = makeStyles({
     [theme.breakpoints.down("xs")]: {
       opacity: 1,
     },
-    "& .MuiSvgIcon-root": {
-      fontSize: "4rem",
+    "& > div": {
+      width: 50,
+      height: 50,
     },
   },
   age: {
@@ -153,14 +155,15 @@ const useStyles = makeStyles({
 
 const DetailTop = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const detailMovie = useSelector((state) => state.detail.detailMovie);
   const {
     hinhAnh,
     heThongRapChieu,
     ngayKhoiChieu,
+    maPhim,
     tenPhim,
     trailer,
-    danhGia,
   } = detailMovie;
   const thoiLuong = React.useMemo(() => {
     return !heThongRapChieu ||
@@ -170,14 +173,37 @@ const DetailTop = () => {
       : heThongRapChieu[0].cumRapChieu[0].lichChieuPhim[0].thoiLuong;
   }, [heThongRapChieu]);
   const [ratingValue, setRatingValue] = React.useState(0);
+  const detailMovieRating = useSelector(
+    (state) => state.detail.detailMovieRating
+  );
+  const diem = React.useMemo(() => {
+    if (
+      !detailMovieRating ||
+      !detailMovieRating.danhGia ||
+      !detailMovieRating.danhGia.length
+    )
+      return;
+    let result = 0;
+    result = Math.round(
+      detailMovieRating.danhGia
+        .map((item) => item.diem)
+        .reduce((prev, current) => prev + current) /
+        detailMovieRating.danhGia.length
+    );
+    return result;
+  }, [detailMovieRating]);
 
   const handleBookTickets = () => {
     sessionStorage.setItem("sectionId", "lichChieu");
   };
 
   React.useEffect(() => {
-    if (danhGia) setRatingValue(danhGia);
-  }, [danhGia]);
+    if (diem) setRatingValue(diem);
+  }, [diem]);
+
+  React.useEffect(() => {
+    maPhim && dispatch(setDetailMovieRating(maPhim));
+  }, [maPhim, dispatch]);
 
   return (
     <Grid container className={classes.root}>
@@ -252,6 +278,12 @@ const DetailTop = () => {
                 &nbsp;&frac12;
               </Typography>
             </Box>
+            <Typography>
+              {detailMovieRating &&
+                detailMovieRating.danhGia &&
+                detailMovieRating.danhGia.length}{" "}
+              người đánh giá
+            </Typography>
           </Box>
         </Grid>
       </Grid>

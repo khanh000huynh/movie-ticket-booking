@@ -24,6 +24,11 @@ const useStyles = makeStyles({
       padding: theme.spacing(0, 2),
     },
   },
+  showtimeGrid: {
+    [theme.breakpoints.down("xs")]: {
+      justifyContent: "center",
+    },
+  },
 });
 
 const DetailTheater = (props) => {
@@ -57,7 +62,7 @@ const DetailTheater = (props) => {
       </AccordionSummary>
       <AccordionDetails>
         <Grid container>
-          <Grid item xs={12} container>
+          <Grid item xs={12} container className={classes.showtimeGrid}>
             {renderShowtime()}
           </Grid>
         </Grid>

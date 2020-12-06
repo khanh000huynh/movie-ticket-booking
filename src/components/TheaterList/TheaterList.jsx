@@ -113,7 +113,9 @@ const TheaterList = (props) => {
           </Typography>
         </Box>
         <Box className={classes.address}>
-          <Typography className={classes.address}>{diaChi}</Typography>
+          <Typography className={classes.address}>
+            {diaChi.length >= 33 ? diaChi.substr(0, 33) + "..." : diaChi}
+          </Typography>
         </Box>
       </Box>
     </Box>

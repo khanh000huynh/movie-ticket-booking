@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { withRouter } from "react-router-dom";
 import Detail from "../Detail/Detail";
 import DetailMovieInformation from "../DetailMovieInformation/DetailMovieInformation";
+import DetailRating from "../DetailRating/DetailRating";
 import TabList from "../TabList/TabList";
 
 const useStyles = makeStyles({
@@ -18,27 +19,27 @@ const useStyles = makeStyles({
 
 const DetailBottom = (props) => {
   const classes = useStyles();
-  const movieInfo = useSelector((state) => state.movie.movieInfo);
-  const maPhimFromUrl = React.useMemo(() => props.match.params.maPhim, [
-    props.match.params.maPhim,
-  ]);
-  const hasShowtime = React.useMemo(
-    () =>
-      movieInfo &&
-      movieInfo.isShowingList.length &&
-      movieInfo.isShowingList.find((movie) => +movie.maPhim === +maPhimFromUrl),
-    [movieInfo, maPhimFromUrl]
-  );
-
+  const detailMovie = useSelector((state) => state.detail.detailMovie);
+  const hasShowtime = React.useMemo(() => {
+    if (!detailMovie || !detailMovie.heThongRapChieu) return;
+    return detailMovie.heThongRapChieu.length;
+  }, [detailMovie]);
   const tabList = React.useMemo(
-    () => (hasShowtime ? ["LỊCH CHIẾU", "THÔNG TIN"] : ["THÔNG TIN"]),
+    () =>
+      hasShowtime
+        ? ["LỊCH CHIẾU", "THÔNG TIN", "ĐÁNH GIÁ"]
+        : ["THÔNG TIN", "ĐÁNH GIÁ"],
     [hasShowtime]
   );
-  const tabPanel1 = <Detail />;
-  const tabPanel2 = <DetailMovieInformation />;
+  const tabPanelLichChieu = <Detail />;
+  const tabPanelThongTin = <DetailMovieInformation />;
+  const tabPanelDanhGia = <DetailRating />;
   const tabPanelList = React.useMemo(
-    () => (hasShowtime ? [tabPanel1, tabPanel2] : [tabPanel2]),
-    [hasShowtime, tabPanel1, tabPanel2]
+    () =>
+      hasShowtime
+        ? [tabPanelLichChieu, tabPanelThongTin, tabPanelDanhGia]
+        : [tabPanelThongTin, tabPanelDanhGia],
+    [hasShowtime, tabPanelLichChieu, tabPanelThongTin, tabPanelDanhGia]
   );
 
   return (

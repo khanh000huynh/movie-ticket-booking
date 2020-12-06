@@ -1,7 +1,7 @@
 import {
   AppBar,
+  Avatar,
   Box,
-  CardMedia,
   Divider,
   Grid,
   makeStyles,
@@ -18,7 +18,7 @@ import { createAction } from "../../redux/actions/actionCreator";
 import { SET_USER_LOGIN } from "../../redux/actions/actionTypes";
 import theme from "../../theme/theme";
 import BookingProcess from "../BookingProcess/BookingProcess";
-import CustomPopover from "../CustomPopover/CustomPopover";
+import Dropdown from "../Dropdown/Dropdown";
 import Logo from "../Logo/logo";
 import MobileDrawer from "../MobileDrawer/MobileDrawer";
 import NavLink from "../NavLink/navLink";
@@ -39,6 +39,13 @@ const useStyles = makeStyles({
       backgroundColor: theme.palette.common.white,
       transition: theme.transitions.duration,
     },
+    "& > div > div": {
+      height: 64,
+      maxHeight: 64,
+    },
+  },
+  avatar: {
+    marginRight: theme.spacing(1.5),
   },
   divider: {
     marginLeft: theme.spacing(2),
@@ -60,10 +67,7 @@ const useStyles = makeStyles({
     },
   },
   box: {
-    paddingTop: "4rem",
-    [theme.breakpoints.down("xs")]: {
-      paddingTop: "3.125rem",
-    },
+    paddingTop: theme.spacing(8),
   },
   userIcon: {
     width: 40,
@@ -101,6 +105,10 @@ const Header = (props) => {
     props.history.push("/dangky");
   }, [props.history]);
 
+  const handleRedirectToBookingHistoryPage = React.useCallback(() => {
+    props.history.push(`/lich-su-dat-ve/${user.taiKhoan}`);
+  }, [props.history, user.taiKhoan]);
+
   const handleLogOut = React.useCallback(async () => {
     localStorage.removeItem("credentials");
     dispatch(createAction(SET_USER_LOGIN, {}));
@@ -111,17 +119,24 @@ const Header = (props) => {
 
   const userControlLogIn = React.useMemo(() => {
     return user.accessToken ? (
-      <CustomPopover
+      <Dropdown
         icon={
-          user.picture ? (
-            <CardMedia
-              image={user.picture}
-              style={{ width: 40, height: 40, marginRight: 10 }}
-            />
-          ) : null
+          <Avatar
+            alt="avatar"
+            src={user.picture ? user.picture : ""}
+            className={classes.avatar}
+          >
+            {user.picture ? null : user.hoTen.charAt(0).toUpperCase()}
+          </Avatar>
         }
-        content={(user.picture ? "" : `Xin chào, `) + user.hoTen}
-        dropdownList={[<Box onClick={handleLogOut}>Đăng xuất</Box>]}
+        content={(user.picture || "") + user.hoTen}
+        dropdownList={[
+          {
+            name: "Lịch sử đặt vé",
+            onClickEvent: handleRedirectToBookingHistoryPage,
+          },
+          { name: "Đăng xuất", onClickEvent: handleLogOut },
+        ]}
       />
     ) : (
       <UserControl
@@ -130,7 +145,14 @@ const Header = (props) => {
         onClickEvent={handleRedirectToLogInPage}
       />
     );
-  }, [user, classes.userIcon, handleLogOut, handleRedirectToLogInPage]);
+  }, [
+    user,
+    classes.avatar,
+    classes.userIcon,
+    handleRedirectToBookingHistoryPage,
+    handleLogOut,
+    handleRedirectToLogInPage,
+  ]);
 
   const userControlSignUp = React.useMemo(() => {
     return user.accessToken ? null : (

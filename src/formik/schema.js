@@ -23,8 +23,14 @@ export const SignUpSchema = Yup.object().shape({
     .max(40, "Họ tên không quá 40 kí tự!"),
 });
 
-export const bookTicketSchema = Yup.object().shape({
+export const BookTicketSchema = Yup.object().shape({
   maLichChieu: Yup.number().required("nope"),
   danhSachVe: Yup.array().required("nope"),
   taiKhoanNguoiDung: Yup.string().required("nope"),
+});
+
+export const MovieRatingSchema = Yup.object().shape({
+  comment: Yup.string()
+    .min(25, "Bình luận phải có ít nhất 25 kí tự!")
+    .required("Bình luận không được để trống!"),
 });

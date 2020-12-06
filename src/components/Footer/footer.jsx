@@ -36,16 +36,27 @@ const useStyles = makeStyles({
   footerContainer: {
     width: "80%",
     margin: "0 auto",
+    [theme.breakpoints.down("xs")]: {
+      width: "100%",
+    },
   },
   footerColumn: {
     [theme.breakpoints.down("sm")]: {
       marginBottom: theme.spacing(4),
+    },
+    "&:first-child > div > div": {
+      [theme.breakpoints.down("sm")]: {
+        textAlign: "center",
+      },
     },
   },
   title: {
     color: theme.palette.common.white,
     marginBottom: theme.spacing(1),
     fontSize: "0.8rem",
+    [theme.breakpoints.down("sm")]: {
+      textAlign: "center",
+    },
   },
   link: {
     color: theme.palette.grey[150],
@@ -70,47 +81,50 @@ const useStyles = makeStyles({
     },
   },
   appIcons: {
-    height: "auto",
+    height: 48,
+    marginRight: theme.spacing(2),
+  },
+  mobile: {
+    textAlign: "center",
   },
   social: {
-    [theme.breakpoints.down("sm")]: {
-      marginLeft: "auto",
-      textAlign: "right",
-    },
-  },
-  socialIcons: {
-    [theme.breakpoints.down("sm")]: {
-      justifyContent: "flex-end",
+    textAlign: "center",
+    "& .MuiAvatar-circle": {
+      width: 48,
+      height: 48,
     },
   },
 });
 
 const Footer = () => {
   const classes = useStyles();
-  const cooperatorImageList = [
-    cgv,
-    bhd,
-    galaxy,
-    cinestar,
-    lotte,
-    megags,
-    beta,
-    dongda,
-    touch,
-    cnx,
-    starlight,
-    dcine,
-    zalopay,
-    payoo,
-    vcb,
-    agribank,
-    viettinbank,
-    ivb,
-    go123,
-    laban,
-  ];
+  const cooperatorImageList = React.useMemo(
+    () => [
+      cgv,
+      bhd,
+      galaxy,
+      cinestar,
+      lotte,
+      megags,
+      beta,
+      dongda,
+      touch,
+      cnx,
+      starlight,
+      dcine,
+      zalopay,
+      payoo,
+      vcb,
+      agribank,
+      viettinbank,
+      ivb,
+      go123,
+      laban,
+    ],
+    []
+  );
 
-  const renderCooperators = () => {
+  const renderCooperators = React.useCallback(() => {
     return cooperatorImageList.map((image, index) => (
       <Grid item container xs={3} key={index} className={classes.coop}>
         <Avatar
@@ -120,12 +134,12 @@ const Footer = () => {
         />
       </Grid>
     ));
-  };
+  }, [cooperatorImageList, classes.coop, classes.coopIcons]);
 
   return (
     <div className={classes.root}>
       <Grid container spacing={1} className={classes.footerContainer}>
-        <Grid item xs={12} md={4} className={classes.footerColumn}>
+        <Grid item xs={12} md={5} className={classes.footerColumn}>
           <Typography className={classes.title}>
             Huỳnh Ngọc Khánh &copy;
           </Typography>
@@ -152,7 +166,7 @@ const Footer = () => {
             </Grid>
           </Grid>
         </Grid>
-        <Grid item sm={12} md={3} className={classes.footerColumn}>
+        <Grid item sm={12} md={2} className={classes.footerColumn}>
           <Typography className={classes.title}>ĐỐI TÁC</Typography>
           <Grid item container>
             {renderCooperators()}
@@ -160,14 +174,13 @@ const Footer = () => {
         </Grid>
         <Grid item xs={12} md={5} className={classes.footerColumn}>
           <Grid item container>
-            <Grid item xs={6}>
+            <Grid item xs={6} className={classes.mobile}>
               <Typography className={classes.title}>MOBILE APP</Typography>
-              <Grid item container>
+              <Grid item container justify="center">
                 <Avatar
                   alt="apple"
                   src={apple}
                   classes={{ root: classes.appIcons }}
-                  style={{ marginRight: "16px" }}
                 />
                 <Avatar
                   alt="android"
@@ -178,12 +191,11 @@ const Footer = () => {
             </Grid>
             <Grid item xs={6} className={classes.social}>
               <Typography className={classes.title}>SOCIAL</Typography>
-              <Grid item container className={classes.socialIcons}>
+              <Grid item container justify="center">
                 <Avatar
                   alt="facebook"
                   src={facebook}
                   classes={{ root: classes.appIcons }}
-                  style={{ marginRight: "16px" }}
                 />
                 <Avatar
                   alt="zalo"

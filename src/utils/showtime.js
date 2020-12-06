@@ -1,5 +1,5 @@
-export const convert = (inputTime) => {
-  let clone = new Date(inputTime);
+export const convert = (datetime) => {
+  let clone = new Date(datetime);
   let hours = clone.getHours();
   hours = hours < 10 ? "0" + hours : hours;
   let minutes = clone.getMinutes();

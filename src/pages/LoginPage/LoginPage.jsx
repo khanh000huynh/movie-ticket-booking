@@ -78,7 +78,7 @@ const LoginPage = () => {
         taiKhoan: profileId,
         matKhau: btoa(profileId),
         hoTen: user.displayName,
-        email: `facebook:${user.email}`,
+        email: `fb:${user.email}`,
         soDT: user.phoneNumber,
         maNhom: "GP01",
         maLoaiNguoiDung: "KhachHang",

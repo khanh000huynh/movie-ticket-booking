@@ -7,6 +7,9 @@ import theme from "../../theme/theme";
 
 const useStyles = makeStyles({
   root: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
     [theme.breakpoints.up("sm")]: {
       width: 0,
     },
@@ -18,7 +21,6 @@ const useStyles = makeStyles({
     },
   },
   menuButton: {
-    marginRight: theme.spacing(2),
     [theme.breakpoints.up("sm")]: {
       display: "none",
     },

@@ -3,6 +3,7 @@ import { toDMY } from "../../utils/showDate";
 import { convert } from "../../utils/showtime";
 import { createAction } from "./actionCreator";
 import {
+  SET_BOOKING_HISTORY,
   SET_CHOSEN_CHAIR_LIST,
   SET_CHOSEN_CHAIR_LIST_TO_EMPTY,
   SET_PROCESS,
@@ -40,5 +41,18 @@ export const setTicketBookingInfo = (maLichChieu, ngayChieuGioChieu) => {
         dispatch(createAction(SET_TICKET_INFO, { ...res.data, thongTinPhim }));
       })
       .catch((err) => console.log(err));
+  };
+};
+
+export const setBookingHistory = (taiKhoan) => {
+  return (dispatch) => {
+    connector({
+      url:
+        "https://movie0706.cybersoft.edu.vn/api/QuanLyNguoiDung/ThongTinTaiKhoan",
+      method: "POST",
+      data: { taiKhoan },
+    }).then((res) => {
+      dispatch(createAction(SET_BOOKING_HISTORY, res.data));
+    });
   };
 };
